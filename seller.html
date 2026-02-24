@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>卖家中心 - 智耘云链</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Inter", "Microsoft YaHei", sans-serif;
+        }
+        body {
+            background: linear-gradient(135deg, #e8f4f8 0%, #f0f8fb 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .brand {
+            font-size: 32px;
+            color: #1e40af;
+            font-weight: 700;
+            margin-bottom: 50px;
+            text-align: center;
+        }
+        .user-info {
+            font-size: 16px;
+            color: #64748b;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+        /* 功能入口按钮组 */
+        .func-btns {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            width: 100%;
+            max-width: 400px;
+        }
+        .func-btn {
+            padding: 20px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(149, 157, 165, 0.15);
+            text-align: center;
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: 600;
+            color: #1e40af;
+            border: 2px solid #3b82f6;
+            transition: all 0.3s;
+        }
+        .func-btn:hover {
+            background: #3b82f6;
+            color: white;
+            transform: translateY(-5px);
+            box-shadow: 0 12px 32px rgba(59, 130, 246, 0.2);
+        }
+        /* 退出按钮 */
+        .logout-btn {
+            margin-top: 40px;
+            padding: 12px 30px;
+            background: #ef4444;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .logout-btn:hover {
+            background: #dc2626;
+        }
+    </style>
+</head>
+<body>
+    <div class="brand">智耘云链 - 卖家中心</div>
+    <div class="user-info" id="sellerUsername">当前登录：未登录</div>
+
+    <!-- 功能入口：上架商品、管理我上架的 -->
+    <div class="func-btns">
+        <a href="add_product.html" class="func-btn">📦 上架新商品</a>
+        <a href="manage.html" class="func-btn">📋 管理我上架的商品</a>
+    </div>
+
+    <button class="logout-btn" onclick="logout()">🚪 退出登录</button>
+
+    <script>
+        // 页面加载验证登录状态
+        window.onload = function() {
+            const loginUsername = localStorage.getItem('loginUsername');
+            if (loginUsername) {
+                document.getElementById('sellerUsername').textContent = `当前登录：${loginUsername}`;
+            } else {
+                alert('请先登录！');
+                window.location.href = 'index.html';
+            }
+        }
+
+        // 退出登录
+        function logout() {
+            localStorage.removeItem('loginUsername');
+            alert('退出登录成功！');
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>

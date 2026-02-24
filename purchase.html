@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>确认下单 - 智耘云链</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Inter", "Microsoft YaHei", sans-serif;
+        }
+        body {
+            background: linear-gradient(135deg, #e8f4f8 0%, #f0f8fb 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .header {
+            max-width: 800px;
+            margin: 0 auto 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .brand {
+            font-size: 24px;
+            color: #1e40af;
+            font-weight: 700;
+        }
+        .btn {
+            padding: 8px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.3s;
+            display: inline-block;
+        }
+        .back-order {
+            color: #3b82f6;
+            border: 1px solid #3b82f6;
+        }
+        .back-order:hover {
+            background: #3b82f6;
+            color: white;
+        }
+        .purchase-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(149, 157, 165, 0.15);
+            padding: 40px;
+        }
+        .product-info-card {
+            background: #f0f9ff;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+            border: 1px solid #bae6fd;
+        }
+        .product-info-title {
+            font-size: 18px;
+            color: #1e40af;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        .product-info-desc {
+            color: #64748b;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .form-item {
+            margin-bottom: 25px;
+        }
+        .form-item label {
+            display: block;
+            margin-bottom: 8px;
+            color: #475569;
+            font-weight: 500;
+            font-size: 14px;
+        }
+        .form-item input, .form-item textarea, .form-item select {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s;
+            background-color: #f8fafc;
+        }
+        .form-item input:focus, .form-item textarea:focus, .form-item select:focus {
+            outline: none;
+            border-color: #3b82f6;
+            background-color: white;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+        }
+        .form-item textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        .price-card {
+            background: #fef3c7;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0 30px;
+            border: 1px solid #fcd34d;
+        }
+        .price-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        .price-label {
+            color: #92400e;
+        }
+        .price-value {
+            color: #b45309;
+            font-weight: 600;
+        }
+        .total-price {
+            font-size: 18px;
+            padding-top: 10px;
+            border-top: 1px dashed #fcd34d;
+            margin-top: 10px;
+        }
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(90deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+        .submit-btn:hover {
+            background: linear-gradient(90deg, #2563eb 0%, #1d4ed8 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+        }
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+        .tip {
+            text-align: center;
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 14px;
+            display: none;
+            line-height: 1.6;
+        }
+        .tip.error {
+            color: #ef4444;
+            background-color: #fef2f2;
+            display: block;
+        }
+        .tip.success {
+            color: #22c55e;
+            background-color: #f0fdf4;
+            display: block;
+        }
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .purchase-container {
+                padding: 20px;
+            }
+            .price-row {
+                flex-direction: column;
+                gap: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="brand">智耘云链 - 确认下单</div>
+        <a href="myorder.html" class="btn back-order">返回我的订单</a>
+    </div>
+
+    <div class="purchase-container">
+        <div class="product-info-card">
+            <div class="product-info-title" id="productName">商品名称</div>
+            <div class="product-info-desc" id="productDesc">商品单价：-- 元/500g</div>
+        </div>
+
+        <form id="purchaseForm">
+            <div class="form-item">
+                <label for="productWeight">购买重量（g）<span style="color:#ef4444;">*</span></label>
+                <input type="number" id="productWeight" placeholder="请输入购买重量，例如：1000（最少500g）" min="500" step="100" oninput="calculateTotalPrice()">
+            </div>
+
+            <div class="form-item">
+                <label for="receiveAddress">收货地址 <span style="color:#ef4444;">*</span></label>
+                <textarea id="receiveAddress" placeholder="请输入详细收货地址，包括省/市/区/街道/门牌号等"></textarea>
+            </div>
+
+            <div class="form-item">
+                <label for="payMethod">支付方式 <span style="color:#ef4444;">*</span></label>
+                <select id="payMethod">
+                    <option value="">请选择支付方式</option>
+                    <option value="alipay">支付宝</option>
+                    <option value="wechat">微信支付</option>
+                    <option value="bank">银行卡支付</option>
+                </select>
+            </div>
+
+            <div class="price-card">
+                <div class="price-row">
+                    <span class="price-label">商品单价：</span>
+                    <span class="price-value" id="unitPrice">0 元/500g</span>
+                </div>
+                <div class="price-row">
+                    <span class="price-label">购买重量：</span>
+                    <span class="price-value" id="weightDisplay">0 g</span>
+                </div>
+                <div class="price-row total-price">
+                    <span class="price-label">订单总价：</span>
+                    <span class="price-value" id="totalPrice">0.00 元</span>
+                </div>
+            </div>
+
+            <button type="button" class="submit-btn" onclick="submitPurchase()">确认下单</button>
+            <div class="tip" id="formTip"></div>
+        </form>
+    </div>
+
+    <!-- 必须引入积分工具函数 -->
+    <script src="pointsUtils.js"></script>
+    <script>
+        // 初始化商品信息
+        let productId = '';
+        let productName = '';
+        let unitPrice = 0; // 单价：元/500g
+        let loginUsername = localStorage.getItem('loginUsername');
+
+        // 页面加载初始化
+        window.onload = function() {
+            // 1. 验证登录状态
+            if (!loginUsername) {
+                alert('请先登录！');
+                window.location.href = 'index.html';
+                return;
+            }
+
+            // 2. 解析URL参数（修复参数解析错误）
+            const urlParams = new URLSearchParams(window.location.search);
+            productId = urlParams.get('productId') || '';
+            productName = decodeURIComponent(urlParams.get('productName') || '未知商品'); // 解码中文
+            unitPrice = parseFloat(urlParams.get('unitPrice')) || 0;
+
+            // 3. 验证商品信息
+            if (!productId || unitPrice === 0 || isNaN(unitPrice)) {
+                alert('商品信息异常，无法下单！');
+                window.location.href = 'myorder.html';
+                return;
+            }
+
+            // 4. 渲染商品信息
+            document.getElementById('productName').textContent = productName;
+            document.getElementById('productDesc').textContent = `商品单价：${unitPrice} 元/500g | 商品ID：${productId}`;
+            document.getElementById('unitPrice').textContent = `${unitPrice} 元/500g`;
+        }
+
+        // 计算总价（修复NaN问题）
+        function calculateTotalPrice() {
+            const weightInput = document.getElementById('productWeight');
+            const weight = parseFloat(weightInput.value) || 0;
+            const weightDisplay = document.getElementById('weightDisplay');
+            const totalPriceEle = document.getElementById('totalPrice');
+
+            // 更新重量显示
+            weightDisplay.textContent = `${weight} g`;
+
+            // 计算总价：(重量/500) * 单价（仅当重量≥500时计算）
+            if (weight >= 500 && unitPrice > 0 && !isNaN(unitPrice)) {
+                const totalPrice = (weight / 500) * unitPrice;
+                totalPriceEle.textContent = `${totalPrice.toFixed(2)} 元`;
+            } else {
+                totalPriceEle.textContent = '0.00 元';
+            }
+        }
+
+        // 提交下单（修复所有逻辑错误，仅下单加积分）
+        function submitPurchase() {
+            const tip = document.getElementById('formTip');
+            // 清空之前的提示
+            tip.className = 'tip';
+            tip.textContent = '';
+
+            // 1. 获取表单值
+            const weight = parseFloat(document.getElementById('productWeight').value) || 0;
+            const address = document.getElementById('receiveAddress').value.trim();
+            const payMethod = document.getElementById('payMethod').value;
+
+            // 2. 表单验证（修复验证逻辑）
+            if (isNaN(weight) || weight < 500) {
+                tip.className = 'tip error';
+                tip.textContent = '购买重量不能少于500g，请输入有效数字！';
+                return;
+            }
+            if (!address) {
+                tip.className = 'tip error';
+                tip.textContent = '请填写详细的收货地址！';
+                return;
+            }
+            if (!payMethod) {
+                tip.className = 'tip error';
+                tip.textContent = '请选择支付方式！';
+                return;
+            }
+
+            // 3. 计算总价和积分（仅下单加积分）
+            const totalPrice = (weight / 500) * unitPrice;
+            const pointsGained = Math.floor(totalPrice * 10); // 1元=10积分
+
+            // 4. 增加积分（仅此时调用，预订时不调用）
+            const newBuyerPoints = addBuyerPoints(loginUsername, totalPrice);
+            const newProductPoints = addProductPoints(productId, totalPrice);
+
+            // 5. 构造订单数据
+            const orderId = 'ORD' + Date.now(); // 唯一订单ID
+            const orderData = {
+                orderId: orderId,
+                productId: productId,
+                productName: productName,
+                unitPrice: unitPrice,
+                weight: weight,
+                totalPrice: totalPrice.toFixed(2),
+                address: address,
+                payMethod: payMethod,
+                buyerName: loginUsername,
+                createTime: new Date().toLocaleString(),
+                status: '已下单待支付'
+            };
+
+            // 6. 保存订单和积分明细
+            let orderList = JSON.parse(localStorage.getItem('purchaseOrders')) || [];
+            orderList.push(orderData);
+            localStorage.setItem('purchaseOrders', JSON.stringify(orderList));
+            recordOrderPoints(orderId, productId, loginUsername, pointsGained);
+
+            // 7. 下单成功提示（显示积分）
+            tip.className = 'tip success';
+            tip.textContent = `下单成功！
+订单ID：${orderId}
+总价：${totalPrice.toFixed(2)} 元
+本次获得积分：+${pointsGained}
+当前总积分：${newBuyerPoints}
+商品累计积分：${newProductPoints}`;
+
+            // 8. 禁用提交按钮，防止重复提交
+            document.querySelector('.submit-btn').disabled = true;
+            document.querySelector('.submit-btn').textContent = '下单成功';
+
+            // 9. 3秒后返回我的订单
+            setTimeout(() => {
+                window.location.href = 'myorder.html';
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
