@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的订单 - 智耘云链</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", sans-serif;
+        }
+        body {
+            background: linear-gradient(135deg, #e8f4f8 0%, #f0f8fb 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .header {
+            max-width: 1200px;
+            margin: 0 auto 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .brand {
+            font-size: 24px;
+            color: #1e40af;
+            font-weight: bold;
+        }
+        .back-btn {
+            padding: 8px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 14px;
+            color: #3b82f6;
+            border: 1px solid #3b82f6;
+        }
+        .back-btn:hover {
+            background: #3b82f6;
+            color: #fff;
+        }
+        .order-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            padding: 30px;
+        }
+        .order-title {
+            font-size: 20px;
+            color: #1e40af;
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f9ff;
+        }
+        .empty-order {
+            text-align: center;
+            padding: 60px 20px;
+            color: #94a3b8;
+            font-size: 16px;
+        }
+        .order-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .order-item {
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        .order-id { font-size: 15px; color: #475569; }
+        .order-status {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            color: #fff;
+            background: #10b981;
+        }
+        .order-body {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-bottom:15px;
+        }
+        .order-info {
+            font-size: 14px;
+            color: #64748b;
+        }
+        .order-info span {
+            color: #1e40af;
+            font-weight: 500;
+        }
+        .order-btns {
+            display: flex;
+            gap:10px;
+        }
+        .order-btns button,
+        .order-btns a {
+            padding:6px 12px;
+            border-radius:6px;
+            border:none;
+            cursor:pointer;
+            font-size:14px;
+            text-decoration:none;
+        }
+        .btn-cancel { background:#ef4444; color:#fff; }
+        .btn-detail { background:#3b82f6; color:#fff; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="brand">我的预订订单</div>
+        <a href="mall.html" class="back-btn">返回商城</a>
+    </div>
+
+    <div class="order-container">
+        <div class="order-title">我的预订</div>
+        <div class="order-list" id="orderList">
+            <div class="empty-order">加载中...</div>
+        </div>
+    </div>
+
+    <script>
+        let loginUser = localStorage.getItem('loginUsername');
+        let orders = JSON.parse(localStorage.getItem('orders') || '[]');
+
+        window.onload = function() {
+            if (!loginUser) {
+                alert('请先登录');
+                location.href = 'login.html';
+                return;
+            }
+            renderMyOrders();
+        };
+
+        function renderMyOrders() {
+            let listEl = document.getElementById('orderList');
+            let myOrders = orders.filter(o => o.buyer === loginUser && o.status === '已预订');
+
+            if (!myOrders.length) {
+                listEl.innerHTML = '<div class="empty-order">暂无预订订单</div>';
+                return;
+            }
+
+            let html = '';
+            myOrders.forEach(order => {
+                html += `
+                <div class="order-item">
+                    <div class="order-header">
+                        <div class="order-id">订单：${order.id}</div>
+                        <div class="order-status">${order.status}</div>
+                    </div>
+                    <div class="order-body">
+                        <div class="order-info">商品：<span>${order.productName}</span></div>
+                        <div class="order-info">单价：<span>${order.price} 元/500g</span></div>
+                        <div class="order-info">预订：<span>${order.amount}份</span></div>
+                        <div class="order-info">总价：<span>${order.totalPrice}元</span></div>
+                        <div class="order-info">时间：<span>${order.createTime}</span></div>
+                    </div>
+                    <div class="order-btns">
+                        <button class="btn-cancel" onclick="cancelOrder('${order.id}')">取消预订</button>
+                        <a href="buyer_itemstatus.html?productId=${order.productId}" class="btn-detail">查看详情</a>
+                    </div>
+                </div>
+                `;
+            });
+            listEl.innerHTML = html;
+        }
+
+        function cancelOrder(orderId) {
+            if(!confirm('确定取消预订？')) return;
+            orders = orders.filter(o => o.id !== orderId);
+            localStorage.setItem('orders', JSON.stringify(orders));
+            renderMyOrders();
+            alert('已取消预订');
+        }
+    </script>
+</body>
+</html>

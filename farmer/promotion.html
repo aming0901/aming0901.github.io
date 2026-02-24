@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>商品推广 - 购买积分 - 智耘云链</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Inter", "Microsoft YaHei", sans-serif;
+        }
+        body {
+            background: linear-gradient(135deg, #e8f4f8 0%, #f0f8fb 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .header {
+            max-width: 800px;
+            margin: 0 auto 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .brand {
+            font-size: 24px;
+            color: #1e40af;
+            font-weight: 700;
+        }
+        .btn {
+            padding: 8px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.3s;
+            display: inline-block;
+        }
+        .back-manage {
+            color: #3b82f6;
+            border: 1px solid #3b82f6;
+        }
+        .back-manage:hover {
+            background: #3b82f6;
+            color: white;
+        }
+        /* 推广表单容器 */
+        .promotion-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(149, 157, 165, 0.15);
+            padding: 40px;
+        }
+        /* 商品信息栏 */
+        .product-info-card {
+            background: #f0f9ff;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+            border: 1px solid #bae6fd;
+        }
+        .product-info-title {
+            font-size: 18px;
+            color: #1e40af;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        .product-info-desc {
+            color: #64748b;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        /* 积分规则提示 */
+        .rule-tip {
+            background: #fef3c7;
+            border-radius: 8px;
+            padding: 10px 16px;
+            margin-bottom: 25px;
+            font-size: 14px;
+            color: #92400e;
+            border-left: 4px solid #f59e0b;
+        }
+        /* 表单项 */
+        .form-item {
+            margin-bottom: 25px;
+        }
+        .form-item label {
+            display: block;
+            margin-bottom: 8px;
+            color: #475569;
+            font-weight: 500;
+            font-size: 14px;
+        }
+        .form-item input, .form-item select {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s;
+            background-color: #f8fafc;
+        }
+        .form-item input:focus, .form-item select:focus {
+            outline: none;
+            border-color: #3b82f6;
+            background-color: white;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+        }
+        /* 金额计算栏 */
+        .price-card {
+            background: #f0fdf4;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0 30px;
+            border: 1px solid #bbf7d0;
+        }
+        .price-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        .price-label {
+            color: #065f46;
+        }
+        .price-value {
+            color: #059669;
+            font-weight: 600;
+        }
+        .total-price {
+            font-size: 18px;
+            padding-top: 10px;
+            border-top: 1px dashed #bbf7d0;
+            margin-top: 10px;
+        }
+        /* 提交按钮 */
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+        .submit-btn:hover {
+            background: linear-gradient(90deg, #059669 0%, #047857 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+        }
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+        /* 提示信息 */
+        .tip {
+            text-align: center;
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 14px;
+            display: none;
+            line-height: 1.6;
+        }
+        .tip.error {
+            color: #ef4444;
+            background-color: #fef2f2;
+            display: block;
+        }
+        .tip.success {
+            color: #22c55e;
+            background-color: #f0fdf4;
+            display: block;
+        }
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .promotion-container {
+                padding: 20px;
+            }
+            .price-row {
+                flex-direction: column;
+                gap: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="brand">智耘云链 - 商品推广</div>
+        <a href="manage.html" class="btn back-manage">返回商品管理</a>
+    </div>
+
+    <div class="promotion-container">
+        <!-- 商品信息展示 -->
+        <div class="product-info-card">
+            <div class="product-info-title" id="productName">商品名称</div>
+            <div class="product-info-desc" id="productDesc">商品ID：-- | 当前积分：--</div>
+        </div>
+
+        <!-- 积分规则提示 -->
+        <div class="rule-tip">
+            📌 推广规则：每支付1元可购买5个商品积分，积分越高商品越容易出现在热门推荐栏
+        </div>
+
+        <!-- 推广表单 -->
+        <form id="promotionForm">
+            <!-- 购买积分值 -->
+            <div class="form-item">
+                <label for="buyPoints">购买积分值 <span style="color:#ef4444;">*</span></label>
+                <input type="number" id="buyPoints" placeholder="请输入要购买的积分值（最少5积分，步长5）" min="5" step="5" oninput="calculateCost()">
+            </div>
+
+            <!-- 支付方式 -->
+            <div class="form-item">
+                <label for="payMethod">支付方式 <span style="color:#ef4444;">*</span></label>
+                <select id="payMethod">
+                    <option value="">请选择支付方式</option>
+                    <option value="alipay">支付宝</option>
+                    <option value="wechat">微信支付</option>
+                    <option value="bank">银行卡支付</option>
+                </select>
+            </div>
+
+            <!-- 金额计算 -->
+            <div class="price-card">
+                <div class="price-row">
+                    <span class="price-label">购买积分：</span>
+                    <span class="price-value" id="pointsDisplay">0 积分</span>
+                </div>
+                <div class="price-row">
+                    <span class="price-label">积分单价：</span>
+                    <span class="price-value">5 积分/元</span>
+                </div>
+                <div class="price-row total-price">
+                    <span class="price-label">需要支付：</span>
+                    <span class="price-value" id="costDisplay">0.00 元</span>
+                </div>
+            </div>
+
+            <!-- 提交按钮 -->
+            <button type="button" class="submit-btn" onclick="submitPromotion()">确认购买</button>
+            <div class="tip" id="formTip"></div>
+        </form>
+    </div>
+
+    <!-- 引入积分工具函数 -->
+    <script src="pointsUtils.js"></script>
+    <script>
+        // 初始化商品信息
+        let productId = '';
+        let productName = '';
+        let loginUsername = localStorage.getItem('loginUsername');
+
+        // 页面加载初始化
+        window.onload = function() {
+            // 验证登录状态
+            if (!loginUsername) {
+                alert('请先登录！');
+                window.location.href = 'index.html';
+                return;
+            }
+
+            // 解析URL参数
+            const params = new URLSearchParams(window.location.search);
+            productId = params.get('productId') || '';
+            productName = decodeURIComponent(params.get('productName') || '未知商品');
+
+            // 验证商品信息
+            if (!productId) {
+                alert('商品信息异常，无法推广！');
+                window.location.href = 'manage.html';
+                return;
+            }
+
+            // 渲染商品信息（含当前积分）
+            const currentPoints = getProductPoints(productId);
+            document.getElementById('productName').textContent = productName;
+            document.getElementById('productDesc').textContent = `商品ID：${productId} | 当前积分：${currentPoints}`;
+        }
+
+        // 计算花费金额（1元=5积分）
+        function calculateCost() {
+            const pointsInput = document.getElementById('buyPoints');
+            const buyPoints = parseFloat(pointsInput.value) || 0;
+            const pointsDisplay = document.getElementById('pointsDisplay');
+            const costDisplay = document.getElementById('costDisplay');
+
+            // 更新积分显示
+            pointsDisplay.textContent = `${buyPoints} 积分`;
+
+            // 计算花费：积分 / 5（1元=5积分）
+            if (buyPoints >= 5 && buyPoints % 5 === 0) { // 限制步长5
+                const cost = buyPoints / 5;
+                costDisplay.textContent = `${cost.toFixed(2)} 元`;
+            } else {
+                costDisplay.textContent = '0.00 元';
+            }
+        }
+
+        // 提交推广（购买积分）
+        function submitPromotion() {
+            const tip = document.getElementById('formTip');
+            tip.className = 'tip';
+            tip.textContent = '';
+
+            // 获取表单值
+            const buyPoints = parseFloat(document.getElementById('buyPoints').value) || 0;
+            const payMethod = document.getElementById('payMethod').value;
+
+            // 表单验证
+            if (buyPoints < 5) {
+                tip.className = 'tip error';
+                tip.textContent = '购买积分不能少于5积分！';
+                return;
+            }
+            if (buyPoints % 5 !== 0) {
+                tip.className = 'tip error';
+                tip.textContent = '购买积分必须是5的倍数（1元=5积分）！';
+                return;
+            }
+            if (!payMethod) {
+                tip.className = 'tip error';
+                tip.textContent = '请选择支付方式！';
+                return;
+            }
+
+            // 计算支付金额
+            const cost = buyPoints / 5;
+
+            // 核心：直接增加商品积分（调用工具函数）
+            const newProductPoints = addProductPointsDirect(productId, buyPoints);
+
+            // 记录推广订单
+            const promoteOrder = {
+                orderId: 'PRO' + Date.now(),
+                productId: productId,
+                productName: productName,
+                buyPoints: buyPoints,
+                cost: cost.toFixed(2),
+                payMethod: payMethod,
+                sellerName: loginUsername,
+                createTime: new Date().toLocaleString()
+            };
+            let promoteOrders = JSON.parse(localStorage.getItem('promoteOrders')) || [];
+            promoteOrders.push(promoteOrder);
+            localStorage.setItem('promoteOrders', JSON.stringify(promoteOrders));
+
+            // 成功提示
+            tip.className = 'tip success';
+            tip.textContent = `推广成功！
+订单ID：${promoteOrder.orderId}
+购买积分：+${buyPoints}
+支付金额：${cost.toFixed(2)} 元
+商品当前总积分：${newProductPoints}`;
+
+            // 禁用提交按钮，防止重复提交
+            document.querySelector('.submit-btn').disabled = true;
+            document.querySelector('.submit-btn').textContent = '购买成功';
+
+            // 3秒后返回商品管理页面
+            setTimeout(() => {
+                window.location.href = 'manage.html';
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
